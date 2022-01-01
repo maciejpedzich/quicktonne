@@ -1,0 +1,20 @@
+name: CI
+on: [push]
+jobs:
+  install-lint-test:
+    name: Install packages, lint, and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+
+      - name: Install packages
+        run: npm ci --cache .npm
+      - name: Lint code
+        run: npm run lint
+      - name: Run unit tests
+        run: npm run test:unit -- --ci
+      - name: Run E2E tests
+        run: npm run test:e2e
