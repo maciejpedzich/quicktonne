@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+
+import { supabase } from '@/supabase';
+import { useAuth } from '@/composables/useAuth';
 
 const route = useRoute();
 const isPageWithCenteredText = computed(() =>
-  ['Home', 'About'].includes(route.name as string)
+  ['Home', 'About', 'SignIn'].includes(route.name as string)
 );
+
+const { loadSession } = useAuth();
+
+onMounted(loadSession);
+supabase.auth.onAuthStateChange(loadSession);
 </script>
 
 <template>
