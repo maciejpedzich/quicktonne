@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Home from '../../src/views/HomePage.vue';
+import Home from '../../src/views/misc/HomePage.vue';
 
 describe('HomePage', () => {
   it('should display proper title', () => {
