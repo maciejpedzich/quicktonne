@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import Toast from 'primevue/toast';
 
 import { supabase } from '@/supabase';
 import { useAuth } from '@/composables/useAuth';
@@ -12,8 +13,12 @@ const isPageWithCenteredText = computed(() =>
 
 const { loadSession } = useAuth();
 
-onMounted(loadSession);
-supabase.auth.onAuthStateChange(loadSession);
+loadSession();
+
+supabase.auth.onAuthStateChange(() => {
+  loadSession();
+  localStorage.setItem('redirect', 'guardReady');
+});
 </script>
 
 <template>
@@ -28,6 +33,7 @@ supabase.auth.onAuthStateChange(loadSession);
   >
     <router-view></router-view>
   </div>
+  <Toast position="bottom-right" />
 </template>
 
 <style>

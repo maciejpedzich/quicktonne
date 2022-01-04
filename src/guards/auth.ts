@@ -1,7 +1,7 @@
-import { watchEffect } from 'vue';
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
 import { useAuth } from '@/composables/useAuth';
+import { watchEffect } from 'vue';
 
 export function authGuard(
   from: RouteLocationNormalized,
@@ -11,12 +11,27 @@ export function authGuard(
   const { isLoadingSession, session } = useAuth();
 
   const checkAuthStatus = () => {
-    if (session.value) {
-      return next();
-    }
+    localStorage.removeItem('redirect');
 
-    return next({ name: 'SignIn' });
+    if (session.value) return next();
+
+    return next({
+      name: 'SignIn',
+      query: {
+        redirect: from.fullPath
+      }
+    });
   };
 
-  watchEffect(() => !isLoadingSession.value && checkAuthStatus())();
+  watchEffect(() => {
+    const afterRedirectCheckStatus = localStorage.getItem('redirect');
+    const loadingFinished = !isLoadingSession.value;
+
+    if (
+      loadingFinished &&
+      (!afterRedirectCheckStatus || afterRedirectCheckStatus === 'guardReady')
+    ) {
+      checkAuthStatus();
+    }
+  });
 }

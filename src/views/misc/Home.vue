@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-
 import Button from 'primevue/button';
+
+import { supabase } from '@/supabase';
+import { useAuth } from '@/composables/useAuth';
+
+const { clearSession } = useAuth();
+const logOut = async () => {
+  clearSession();
+
+  await supabase.auth.signOut();
+  await router.push('/sign-in');
+};
 
 const router = useRouter();
 const goToSignInPage = () => router.push('/sign-in');
@@ -16,5 +26,6 @@ const goToSignInPage = () => router.push('/sign-in');
   </div>
   <div class="flex flex-wrap justify-content-center lg:text-lg text-md mt-2">
     <Button label="Join now" @click="goToSignInPage" />
+    <Button class="p-button-danger ml-3" label="Log out" @click="logOut" />
   </div>
 </template>
