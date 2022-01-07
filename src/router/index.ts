@@ -1,4 +1,5 @@
 import { authGuard } from '@/guards/auth';
+import { clearHashGuard } from '@/guards/clearHash';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -24,5 +25,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.afterEach(clearHashGuard);
 
 export default router;

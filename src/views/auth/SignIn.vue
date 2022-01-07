@@ -20,7 +20,8 @@ const signIn = async (provider: 'github' | 'bitbucket') => {
     const redirectPath = route.query.redirect as string;
     const redirectTo = `${window.location.origin}${redirectPath || '/'}`;
 
-    redirectPath && localStorage.setItem('redirect', 'yes');
+    if (redirectPath) localStorage.setItem('redirect', 'yes');
+
     const { error } = await supabase.auth.signIn({ provider }, { redirectTo });
 
     if (error) throw error;
@@ -46,11 +47,12 @@ const signIn = async (provider: 'github' | 'bitbucket') => {
     <div class="text-5xl text-center font-bold mb-3">Sign in via...</div>
     <div class="flex">
       <Button
+        id="github"
         class="p-button-secondary mr-3"
         label="Github"
         @click="signIn('github')"
       />
-      <Button label="Bitbucket" @click="signIn('bitbucket')" />
+      <Button id="bitbucket" label="Bitbucket" @click="signIn('bitbucket')" />
     </div>
   </template>
 </template>

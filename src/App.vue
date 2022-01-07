@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+
+import ProgressSpinner from 'primevue/progressspinner';
 import Toast from 'primevue/toast';
 
 import { supabase } from '@/supabase';
@@ -11,18 +13,22 @@ const isPageWithCenteredText = computed(() =>
   ['Home', 'About', 'SignIn'].includes(route.name as string)
 );
 
-const { loadSession } = useAuth();
+const { isLoadingSession, loadSession } = useAuth();
 
 loadSession();
 
-supabase.auth.onAuthStateChange(() => {
-  loadSession();
-  localStorage.setItem('redirect', 'guardReady');
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_IN') {
+    localStorage.setItem('redirect', 'guardReady');
+    loadSession();
+  }
 });
 </script>
 
 <template>
+  <ProgressSpinner v-if="isLoadingSession" />
   <div
+    v-show="!isLoadingSession"
     :class="[
       'w-full',
       'h-full',
